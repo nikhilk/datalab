@@ -15,8 +15,10 @@
 // main.ts
 // Application entrypoint.
 
+import { Application } from './datalab';
+
 function main(): void {
-  console.log('Cloud Datalab Application');
+  Application.run();
 }
 
 main();
