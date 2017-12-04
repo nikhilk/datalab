@@ -13,49 +13,12 @@
 // limitations under the License.
 
 // datalab.ts
-// Top-level Datalab Application class.
+// Datalab application entrypoint.
 
-import * as electron from 'electron';
-import * as path from 'path';
+import { Application } from './main/app';
 
-export class Application {
-
-  private static _instance: Application;
-
-  private readonly _app: electron.App;
-  private _window: electron.BrowserWindow|null;
-
-  private constructor(app: electron.App) {
-    this._app = app;
-    this._window = null;
-
-    this._app.on('ready', this._onReady.bind(this));
-    this._app.on('window-all-closed', this._onClosed.bind(this));
-  }
-
-  static get instance(): Application {
-    return Application._instance;
-  }
-
-  private _onClosed() {
-    this._app.quit();
-  }
-
-  private _onReady() {
-    let rootPath = path.join(__dirname, 'datalab.html');
-    let url = `file://${rootPath}`
-    console.log(url);
-
-    this._window = new electron.BrowserWindow();
-    this._window.on('closed', this._onWindowClosed.bind(this));
-    this._window.loadURL(url);
-  }
-
-  private _onWindowClosed() {
-    this._window = null;
-  }
-
-  public static run(): void {
-    Application._instance = new Application(electron.app);
-  }
+function run(): void {
+  Application.run();
 }
+
+run();
