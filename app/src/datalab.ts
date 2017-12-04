@@ -42,7 +42,7 @@ export class Application {
   }
 
   private _onReady() {
-    let rootPath = path.join(__dirname, 'ui', 'index.html');
+    let rootPath = path.join(__dirname, 'datalab.html');
     let url = `file://${rootPath}`
     console.log(url);
 

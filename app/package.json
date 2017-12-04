@@ -8,7 +8,7 @@
   "main": "build/main.js",
   "scripts": {
     "build": "tsc",
-    "build-ui": "copyfiles -u 1 src/ui/** build/",
+    "build-ui": "copyfiles -u 1 static/** build/",
     "postbuild": "npm run -s build-ui",
 
     "clean": "rm -r build/*",
