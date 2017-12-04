@@ -1,0 +1,19 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "Google Cloud Datalab Application",
+  "keywords": [],
+  "author": "Google",
+  "license": "Apache-2.0",
+  "main": "main.js",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -r build/*",
+    "dev-server": "dev-server build 10000"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "dev-server": "file:../tools/dev-server",
+    "typescript": "^2.6.2"
+  }
+}
