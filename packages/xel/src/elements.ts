@@ -45,7 +45,7 @@ export function element(tagName: string): any {
   return function(target: XElementType, name: string, descriptor: any) {
     let metadata = target.$meta || (target.$meta = new XElementMetadata());
 
-    metadata.defineElement(tagName, target);
+    metadata.registerElement(tagName, target);
   }
 }
 
@@ -86,7 +86,7 @@ class XElementMetadata {
     return Object.keys(this.attrs);
   }
 
-  defineElement(tagName: string, type: Function) {
+  private _defineType(type: Function) {
     let prototype = type.prototype;
     let metadata = this;
     for (let propKey in this.props) {
@@ -96,21 +96,23 @@ class XElementMetadata {
         metadata.attrs[prop.attribute] = prop;
       }
 
-      XElementMetadata.defineProperty(prototype, propKey, prop);
+      XElementMetadata._defineProperty(prototype, propKey, prop);
     }
 
     let baseType = Object.getPrototypeOf(type);
     if (baseType !== XElement) {
       let baseMetadata = (<XElementType>baseType).$meta;
+      if (!baseMetadata) {
+        baseMetadata = ((<XElementType>baseType).$meta = new XElementMetadata());
+        baseMetadata._defineType(baseType);
+      }
+
       this.props = Object.assign({}, baseMetadata.props, this.props);
       this.attrs = Object.assign({}, baseMetadata.attrs, this.attrs);
     }
-
-    this.tag = tagName;
-    customElements.define(tagName, type);
   }
 
-  static defineProperty(prototype: any, name: string, prop: PropertyMetadata) {
+  private static _defineProperty(prototype: any, name: string, prop: PropertyMetadata) {
     Object.defineProperty(prototype, prop.name, {
       get(): any {
         return (<XElement>this).$$[prop.name];
@@ -171,6 +173,13 @@ class XElementMetadata {
         }
       }
     }
+  }
+
+  registerElement(tagName: string, type: Function) {
+    this._defineType(type);
+
+    this.tag = tagName;
+    customElements.define(tagName, type);
   }
 }
 
