@@ -5,22 +5,29 @@
   "keywords": [],
   "author": "Google",
   "license": "Apache-2.0",
-  "main": "build/datalab.js",
   "scripts": {
-    "build": "tsc",
-    "build-ui": "copyfiles -u 1 static/** build/",
-    "postbuild": "npm run -s build-ui",
-
-    "clean": "rm -r build/*",
-
-    "app": "electron .",
-    "dev-server": "dev-server build 10000"
+    "compile": "tsc",
+    "build": "rollup -c",
+    "build-static": "copyfiles -u 1 static/** ../dist/pages/",
+    "prebuild": "npm run -s compile",
+    "postbuild": "npm run -s && npm run -s build-static",
+    "clean": "rm -rf build && rm -rf ../dist",
+    "app": "electron ../dist/main.js",
+    "dev-server": "dev-server ../dist 10000"
   },
-  "dependencies": {},
+  "flat": true,
+  "dependencies": {
+    "datalab-xel": "file:../packages/xel"
+  },
   "devDependencies": {
     "copyfiles": "^1.2.0",
     "dev-server": "file:../tools/dev-server",
     "electron": "^1.7.9",
+    "rollup": "^0.52.1",
+    "rollup-plugin-commonjs": "^8.2.6",
+    "rollup-plugin-json": "^2.3.0",
+    "rollup-plugin-node-builtins": "^2.1.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
     "typescript": "^2.6.2"
   }
 }

@@ -42,16 +42,28 @@ export class Application {
   }
 
   private _onReady() {
-    let rootPath = path.join(__dirname, '..', 'datalab.html');
+    let rootPath = path.join(__dirname, 'pages', 'start.html');
     let url = `file://${rootPath}`
 
-    this._window = new electron.BrowserWindow();
+    let windowOptions = {
+      show: false
+    };
+
+    this._window = new electron.BrowserWindow(windowOptions);
     this._window.on('closed', this._onWindowClosed.bind(this));
+    this._window.on('ready-to-show', this._onWindowReady.bind(this));
     this._window.loadURL(url);
   }
 
   private _onWindowClosed() {
     this._window = null;
+  }
+
+  private _onWindowReady() {
+    if (this._window) {
+      this._window.webContents.toggleDevTools();
+      this._window.show();
+    }
   }
 
   public static run(): void {

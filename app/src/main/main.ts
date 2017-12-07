@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// datalab.ts
-// Datalab application entrypoint.
+// main.ts
+// Application entrypoint.
 
-import { Application } from './main/app';
+import { Application } from './app';
 
 function run(): void {
   Application.run();
