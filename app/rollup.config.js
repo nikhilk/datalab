@@ -18,9 +18,36 @@
 import builtins from 'rollup-plugin-node-builtins';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
-import json from 'rollup-plugin-json';
 
+import * as fs from 'fs';
+import * as plugins from 'rollup-pluginutils';
+
+// NOTE: This is hopefully temporary, and we can switch to using rollup-plugin-json.
+//       The plugin doesn't allow loading of specific manifest fields, and generates
+//       several top-level fields.
+//       See https://github.com/rollup/rollup-plugin-json/issues/37
+function manifest() {
+  const filter = plugins.createFilter(['./package.json']);
+
+  return {
+    name: 'manifest',
+    load: function(id) {
+      if (!filter(id)) {
+        return null;
+      }
+
+      let manifestData = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+      return `export default {
+        name: '${manifestData.name}',
+        version: '${manifestData.version}'
+      }`;
+    }
+  }
+}
+
+// Script for electron main process.
 const mainBundle = {
+  context: 'global',
   input: 'build/main/main.js',
   output: {
     file: '../dist/main.js',
@@ -30,7 +57,6 @@ const mainBundle = {
     'electron'
   ],
   plugins: [
-    json(),
     builtins(),
     resolve(),
     commonjs({
@@ -38,13 +64,14 @@ const mainBundle = {
         'node_modules/electron/index.js': [ 'app', 'BrowserWindow' ]
       },
       sourceMap: false
-    })
+    }),
+    manifest()
   ]
 };
 
+// Scripts for electron renderer process (one per page).
 // NOTE: When electron supports ES2015, we can switch format from iife to es.
-
-const windowBundle = {
+const startPageBundle = {
   name: 'datalabWindow',
   context: 'window',
   input: 'build/pages/start.js',
@@ -66,5 +93,5 @@ const windowBundle = {
 
 export default [
   mainBundle,
-  windowBundle
+  startPageBundle
 ];

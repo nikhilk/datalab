@@ -12,21 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// main.ts
-// Application entrypoint.
+// global.d.ts
+// Shared type definitions.
 
-import { Application } from './app';
-import packageInfo from '../../package.json';
-
-async function loadConfigurationAsync(): Promise<Configuration> {
-  return {
-    version: packageInfo.version
-  };
+// Allows importing json files as modules that export a single default value.
+declare module "*.json" {
+  const value: any;
+  export default value;
 }
 
-async function run() {
-  let config = await loadConfigurationAsync();
-  Application.run(config);
+declare interface Configuration {
+  version: string;
 }
-
-run();

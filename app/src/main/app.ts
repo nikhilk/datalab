@@ -22,15 +22,19 @@ export class Application {
 
   private static _instance: Application;
 
+  private readonly _config: Configuration;
   private readonly _app: electron.App;
   private _window: electron.BrowserWindow|null;
 
-  private constructor(app: electron.App) {
+  private constructor(config: Configuration, app: electron.App) {
+    this._config = config;
     this._app = app;
     this._window = null;
 
     this._app.on('ready', this._onReady.bind(this));
     this._app.on('window-all-closed', this._onClosed.bind(this));
+
+    console.log(this._config.version);
   }
 
   static get instance(): Application {
@@ -66,7 +70,7 @@ export class Application {
     }
   }
 
-  public static run(): void {
-    Application._instance = new Application(electron.app);
+  public static run(config: Configuration): void {
+    Application._instance = new Application(config, electron.app);
   }
 }
