@@ -17,9 +17,17 @@
 
 import * as xel from 'datalab-xel';
 
-export abstract class Application extends xel.XElement {
+export abstract class Application extends xel.XStaticElement {
+
+  private static _content = `
+    <div>
+      <slot name="title"></slot>
+      <hr>
+      <slot></slot>
+    </div>
+  `;
 
   constructor() {
-    super();
+    super(Application._content);
   }
 }

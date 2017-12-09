@@ -184,14 +184,7 @@ class XElementMetadata {
 }
 
 
-export type HTMLContentFactory = (strings: TemplateStringsArray, ...values: any[]) => HTMLContent;
-
-export declare class HTMLContent {
-  template: any;
-  values: any[];
-}
-
-export declare interface HTMLContentInstance {
+export declare interface XElementContent {
   readonly [id: string]: HTMLElement;
 }
 
@@ -217,7 +210,7 @@ export abstract class XElement extends HTMLElement {
     this._root = this.attachShadow({ mode: 'open' });
   }
 
-  get $(): HTMLContentInstance {
+  get $(): XElementContent {
     let elements = this._root.querySelectorAll('[id]');
     let map: any = {};
 
@@ -225,7 +218,7 @@ export abstract class XElement extends HTMLElement {
       map[el.id] = <HTMLElement>el;
     }
 
-    return <HTMLContentInstance>map;
+    return <XElementContent>map;
   }
 
   get $$(): XElementState {
@@ -267,8 +260,6 @@ export abstract class XElement extends HTMLElement {
     this.onDetached();
   }
 
-  abstract createContent(html: HTMLContentFactory): HTMLContent;
-
   onAttached() {
   }
 
@@ -281,10 +272,7 @@ export abstract class XElement extends HTMLElement {
   onUpdating() {
   }
 
-  render(): void {
-    let content = this.createContent(lit.html);
-    lit.render(content, this._root);
-  }
+  abstract render(root: ShadowRoot): void;
 
   update(immediate?: boolean) {
     if (!this._initialized) {
@@ -310,7 +298,44 @@ export abstract class XElement extends HTMLElement {
   _update() {
     this._updateCookie = 0;
     this.onUpdating();
-    this.render();
+    this.render(this._root);
     this.onUpdated();
+  }
+}
+
+
+export abstract class XStaticElement extends XElement {
+
+  private readonly _content: string;
+
+  constructor(content: string) {
+    super();
+    this._content = content;
+  }
+
+  render(root: ShadowRoot): void {
+    root.innerHTML = this._content;
+  }
+}
+
+
+export declare class XTemplate {
+  template: any;
+  values: any[];
+}
+export type XTemplateFactory = (strings: TemplateStringsArray, ...values: any[]) => XTemplate;
+
+
+export abstract class XTemplatedElement extends XElement {
+
+  constructor() {
+    super();
+  }
+
+  abstract createContent(html: XTemplateFactory): XTemplate;
+
+  render(root: ShadowRoot): void {
+    let content = this.createContent(lit.html);
+    lit.render(content, root);
   }
 }

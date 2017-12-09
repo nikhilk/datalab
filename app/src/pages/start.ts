@@ -24,8 +24,4 @@ export class StartPage extends layout.Application {
   constructor() {
     super();
   }
-
-  createContent(html: xel.HTMLContentFactory): xel.HTMLContent {
-    return html`Datalab Start Page!`;
-  }
 }
