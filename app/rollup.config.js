@@ -39,7 +39,10 @@ function manifest() {
       let manifestData = JSON.parse(fs.readFileSync('package.json', 'utf8'));
       return `export default {
         name: '${manifestData.name}',
-        version: '${manifestData.version}'
+        fullName: '${manifestData.fullName}',
+        description: '${manifestData.description}',
+        version: '${manifestData.version}',
+        homepage: '${manifestData.homepage}'
       }`;
     }
   }
@@ -61,7 +64,7 @@ const mainBundle = {
     resolve(),
     commonjs({
       namedExports: {
-        'node_modules/electron/index.js': [ 'app', 'BrowserWindow' ]
+        'node_modules/electron/index.js': [ 'app', 'BrowserWindow', 'Menu' ]
       },
       sourceMap: false
     }),
@@ -84,7 +87,7 @@ const startPageBundle = {
     resolve(),
     commonjs({
       namedExports: {
-        'node_modules/electron/index.js': [ 'app', 'BrowserWindow' ]
+        'node_modules/electron/index.js': [ 'remote' ]
       },
       sourceMap: false
     })

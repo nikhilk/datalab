@@ -22,5 +22,8 @@ declare module "*.json" {
 }
 
 declare interface Configuration {
+  name: string;
+  description: string;
+  productUrl: string;
   version: string;
 }

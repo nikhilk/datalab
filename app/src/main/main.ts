@@ -20,6 +20,9 @@ import packageInfo from '../../package.json';
 
 async function loadConfigurationAsync(): Promise<Configuration> {
   return {
+    name: packageInfo.fullName,
+    description: packageInfo.description,
+    productUrl: packageInfo.homepage,
     version: packageInfo.version
   };
 }

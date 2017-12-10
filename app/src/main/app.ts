@@ -18,23 +18,25 @@
 import * as electron from 'electron';
 import * as path from 'path';
 
+import { CommandSet } from './commands';
+
 export class Application {
 
   private static _instance: Application;
 
   private readonly _config: Configuration;
+  private readonly _commands: CommandSet;
   private readonly _app: electron.App;
   private _window: electron.BrowserWindow|null;
 
   private constructor(config: Configuration, app: electron.App) {
     this._config = config;
+    this._commands = new CommandSet(config);
     this._app = app;
     this._window = null;
 
     this._app.on('ready', this._onReady.bind(this));
     this._app.on('window-all-closed', this._onClosed.bind(this));
-
-    console.log(this._config.version);
   }
 
   static get instance(): Application {
@@ -49,7 +51,10 @@ export class Application {
     let rootPath = path.join(__dirname, 'pages', 'start.html');
     let url = `file://${rootPath}`
 
+    this._commands.updateCommands();
+
     let windowOptions = {
+      title: this._config.name,
       show: false
     };
 
@@ -65,7 +70,6 @@ export class Application {
 
   private _onWindowReady() {
     if (this._window) {
-      this._window.webContents.toggleDevTools();
       this._window.show();
     }
   }

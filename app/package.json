@@ -1,10 +1,17 @@
 {
-  "name": "app",
+  "name": "datalab",
+  "fullName": "Google Cloud Datalab",
   "version": "1.0.0",
-  "description": "Google Cloud Datalab Application",
+  "description": "Interactive data science on Google Cloud Platform.",
+  "homepage": "https://cloud.google.com/datalab",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nikhilk/datalab"
+  },
   "keywords": [],
   "author": "Google",
   "license": "Apache-2.0",
+  "private": true,
   "scripts": {
     "compile": "tsc",
     "build": "rollup -c",
